@@ -28,7 +28,8 @@ const io = new Server(server, {
   cors: {
     origin: [
       'http://localhost:5173',
-      'https://appointment-booking-system-three.vercel.app'
+      'https://appointment-booking-system-three.vercel.app',
+      'https://appointment-booking-system-i6klef0g9.vercel.app'
     ],
     methods: ['GET', 'POST'],
     credentials: true,
@@ -40,7 +41,8 @@ const io = new Server(server, {
 app.use(cors({
   origin: [
     'http://localhost:5173',
-    'https://appointment-booking-system-three.vercel.app'
+    'https://appointment-booking-system-three.vercel.app',
+    'https://appointment-booking-system-i6klef0g9.vercel.app'
   ],
   credentials: true,
 }));
