@@ -24,26 +24,25 @@ app.use(cookieParser());
 const server = http.createServer(app);
 
 
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://appointment-booking-system-three.vercel.app', // backend
+  'https://appointment-booking-system-eight.vercel.app', // frontend
+];
+
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true,
+}));
+
 const io = new Server(server, {
   cors: {
-    origin: [
-      'http://localhost:5173',
-       process.env.VITE_BASE_URL,
-    ],
+    origin: allowedOrigins,
     methods: ['GET', 'POST'],
     credentials: true,
   },
 });
 
-
-// Express CORS middleware
-app.use(cors({
-  origin: [
-    'http://localhost:5173',
-     process.env.VITE_BASE_URL,
-  ],
-  credentials: true,
-}));
 
 
 app.use(
