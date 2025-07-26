@@ -17,10 +17,12 @@ import appointmentRouter from './routes/appointments.routes.js';
 
 dotenv.config();
 
+const PORT = process.env.PORT || 5001;
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
 const server = http.createServer(app);
+
 
 const io = new Server(server, {
   cors: {
@@ -55,6 +57,11 @@ app.use('/api/v1/store', storeRouter);
 app.use('/api/v1/service', serviceRouter);
 app.use('/api/v1/appointment', appointmentRouter);
 
+
+app.get('/', (req, res) => {
+  res.send('Welcome to the Appointment Booking System API');
+});
+
 await connectDB();
 
 // socket.io connection
@@ -78,6 +85,7 @@ process.on('uncaughtException', (err) => {
   process.exit(1);
 });
 
-server.listen(5001, () => {
-  console.log('Server running on http://localhost:5001');
+server.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
 });
+
