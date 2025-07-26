@@ -49,7 +49,7 @@ export default function ServicesDisplayPage() {
       setIsLoading(true);
       try {
   
-        const res = await fetch(`${apiUrl}/v1/service/listAll`, {
+        const res = await fetch(`${apiUrl}/service/listAll`, {
           method: 'GET'
         });
         if (!res.ok) {

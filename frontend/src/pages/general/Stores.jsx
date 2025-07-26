@@ -68,7 +68,7 @@ export default function Stores() {
     const fetchStores = async () => {
       setIsLoading(true);
       
-      const response = await fetch(`${apiUrl}/api/v1/store/`, {
+      const response = await fetch(`${apiUrl}/store/`, {
         method: 'GET'
       });
       const data = await response.json();

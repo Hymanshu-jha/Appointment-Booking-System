@@ -1,6 +1,6 @@
 import React, { useState, useRef , useCallback } from 'react';
 import { categories } from '../../components/StoreCard';
-import LeafLet from '../map/LeafLet.jsx';
+import LeafLet from '../map/LeafLet';
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -33,7 +33,7 @@ export const AddStore = () => {
     }
 
   try {
-    const res = await fetch(`${apiUrl}/v1/store/create`, {
+    const res = await fetch(`${apiUrl}/store/create`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
