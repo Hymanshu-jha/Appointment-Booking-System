@@ -1,6 +1,7 @@
 import nodemailer from "nodemailer";
 import generateVerificationEmail from "./verificationMailTemplate.js";
 
+const VITE_API_URL = process.env.VITE_API_URL || 'http://localhost:5001/api/v1';
 
 import dotenv from 'dotenv';
 dotenv.config();
@@ -22,7 +23,7 @@ const sendVerificationMail = async ({ to, token, username }) => {
   }
 });
 
-  const verificationLink = `http://localhost:5001/api/v1/user/mailverify?token=${token}`;
+  const verificationLink = `${VITE_API_URL}/user/mailverify?token=${token}`;
 
   const html = generateVerificationEmail({
     username,
