@@ -6,7 +6,6 @@ import AuthContext from "../contexts/AuthContext";
 const apiUrl = import.meta.env.VITE_API_URL;
 
 
-
 const Navbar = () => {
   const { user, setUser } = useContext(AuthContext);
   const navigate = useNavigate();

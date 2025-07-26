@@ -7,6 +7,8 @@ const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 const GOOGLE_REDIRECT_URI = process.env.GOOGLE_REDIRECT_URI;
 
+VITE_BASE_URL = process.env.VITE_BASE_URL || 'http://localhost:5173';
+
 const oauth2Client = new google.auth.OAuth2(
   GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET,
@@ -108,7 +110,7 @@ export const consentPageCallbackHandler = async (req, res) => {
     });
 
     
-    return res.redirect('http://localhost:5173/services');
+    return res.redirect('${VITE_BASE_URL}/services');
 
   } catch (error) {
     console.error('OAuth callback error:', error);

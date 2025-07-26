@@ -18,12 +18,7 @@ export const Home = () => {
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
         >
-            
-            {/* Status Badge */}
-            <div className="inline-flex items-center px-4 py-2 mb-8 rounded-full bg-purple-600/20 border border-purple-500/30">
-              <div className="w-2 h-2 bg-red-500 rounded-full mr-2"></div>
-              <span className="text-sm font-medium text-purple-300">Live Now</span>
-            </div>
+          
 
             {/* Main Heading */}
             <h1 className="text-5xl sm:text-6xl md:text-7xl font-black mb-8 leading-tight">

@@ -3,6 +3,7 @@ import Appointment from '../db/schema/appointments.models.js';
 import Service from '../db/schema/services.models.js';
 import { addJobToBullmq } from '../utils/bullmq/producer.bullmq.js';
 
+VITE_BASE_URL = process.env.VITE_BASE_URL || 'http://localhost:5173';
 
 export const getFreeSlots = async (req, res, next) => {
   try {
@@ -143,8 +144,8 @@ export const createPaymentController = async (req, res) => {
       payment_method_types: ["card"],
       line_items,
       mode: "payment",
-      success_url: `http://localhost:5173/appointments/`,
-      cancel_url: `http://localhost:5173/cancel`,
+      success_url: `${VITE_BASE_URL}/appointments/`,
+      cancel_url: `${VITE_BASE_URL}/cancel`,
       metadata: {
         appointmentId: newAppointment._id.toString(),
       },

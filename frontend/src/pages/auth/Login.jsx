@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 const apiUrl = import.meta.env.VITE_API_URL;
+const baseUrl = import.meta.env.VITE_BASE_URL;
 
 export const Login = () => {
   const [email, setEmail] = useState('');
@@ -25,7 +26,7 @@ export const Login = () => {
         console.log(result);
         if (result?.success) {
           // Redirect or handle success
-          window.location.href = 'http://localhost:5173/services';
+          window.location.href = `${baseUrl}/services`;
         } else {
           setErrorMsg(result?.message || 'Login failed.');
         }
