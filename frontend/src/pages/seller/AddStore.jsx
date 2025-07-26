@@ -1,6 +1,6 @@
 import React, { useState, useRef , useCallback } from 'react';
 import { categories } from '../../components/StoreCard';
-import LeafLet from '../map/leaflet';
+import LeafLet from '../map/LeafLet.jsx';
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
