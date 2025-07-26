@@ -1,0 +1,24 @@
+first we will implement deleivering status 
+---
+[1] whenever an appointment is scheduled successfully then after receiving stripe webhook
+then immediately inside that route handler only, add a job to bullmq queue, (appointmentId),
+appointmentTime
+and this job will be 'scheduled' at time = appointmentTime and Appointment.find(appointmentId).
+status = 'deleivering'
+but we must check at the time of updation from worker js, that appointment status must be 'scheduled'
+and paymentStatus = 'succeeded'
+
+
+appointment completion status 
+---
+[2] whenever an appointment is scheduled successfully from webhook route handler, we will immediately 
+add a job to the queue , appointmentId, appointmentTime+serviceTime, 
+at time =  appointmentTime+serviceTime
+worker bullmq will check if status = 'deleivering'
+then update status = 'completed'
+5 minutes, 2 minutes and 1 minute before completion time only if appointment.status = 'deleivering', 
+we will give reminders in webApp itself 
+
+
+---
+Added 

@@ -1,0 +1,35 @@
+project started: 01-07-2025
+
+Tech Stacks: MERN + MatetrialUI + BullMQ + stripe + google maps API
+
+
+
+Application type: Web application, name: webclient1
+
+client_id:
+811182347434-sihphajmoq5vjvjmfamk2eet6vsdnacc.apps.googleusercontent.com
+
+------------------------------------DUMMY_USER-------------------------------------------
+
+{
+    "userName": "himanshu",
+    "email": "himanshujhaa4262@gmail.com",
+    "password": "himanshu"
+}
+
+
+
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImhpbWFuc2h1amhhYTQyNjJAZ21haWwuY29tIiwiX2lkIjoiNjg2ZTU4ODFkODA5OWUyZjBjOTk5ODdhIiwiaWF0IjoxNzUyMDYyMTUxLCJleHAiOjE3NTIwNjU3NTF9.FO1bCfvzDUs6s7EJhgB0Un3dBuO_h7grj9ZGqxnFdco
+
+
+{
+  "name": "Sunrise Salon",
+  "owner": "64e7d4c4f2e8c7323a934512",
+  "category": "salon",
+  "imageUrl": "https://example.com/image.jpg"
+}
+
+
+................................NOTES.....................NOTES..............................................
+
+
