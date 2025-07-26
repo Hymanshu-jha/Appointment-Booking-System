@@ -13,7 +13,7 @@ export const Login = () => {
 
     const data = { email, password };
 
-    fetch(`${baseUrl}/user/login`, {
+    fetch(`${apiUrl}/user/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
