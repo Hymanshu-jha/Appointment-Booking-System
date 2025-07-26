@@ -2,6 +2,11 @@ import React, { useContext, useState, useEffect, useRef } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import AuthContext from "../contexts/AuthContext";
 
+
+const apiUrl = import.meta.env.VITE_API_URL;
+
+
+
 const Navbar = () => {
   const { user, setUser } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -33,7 +38,7 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     try {
-      const res = await fetch("http://localhost:5001/api/v1/user/logout", {
+      const res = await fetch(`${apiUrl}/v1/user/logout`, {
         method: "POST",
         credentials: "include",
       });

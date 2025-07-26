@@ -4,6 +4,9 @@ import { Search, Filter, MapPin, Star, Clock, Phone, Globe, ChevronDown, Grid3X3
 import { StoreCard } from '../../components/StoreCard';
 
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
+
 const categories = [
   'all',
   'salon',
@@ -65,7 +68,7 @@ export default function Stores() {
     const fetchStores = async () => {
       setIsLoading(true);
       
-      const response = await fetch('http://localhost:5001/api/v1/store/', {
+      const response = await fetch(`${apiUrl}/api/v1/store/`, {
         method: 'GET'
       });
       const data = await response.json();

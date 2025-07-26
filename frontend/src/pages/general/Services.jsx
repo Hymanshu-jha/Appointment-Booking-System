@@ -4,7 +4,7 @@ import { Search, Filter, Star, Clock, DollarSign, MapPin, User, Grid3X3, List, S
 import { ServiceCard } from '../../components/ServiceCard';
 import { useLocation } from 'react-router-dom';
 
-
+const apiUrl = import.meta.env.VITE_API_URL;
 
 export default function ServicesDisplayPage() {
   const [services, setServices] = useState([]);
@@ -49,7 +49,7 @@ export default function ServicesDisplayPage() {
       setIsLoading(true);
       try {
   
-        const res = await fetch(`http://localhost:5001/api/v1/service/listAll`, {
+        const res = await fetch(`${apiUrl}/v1/service/listAll`, {
           method: 'GET'
         });
         if (!res.ok) {

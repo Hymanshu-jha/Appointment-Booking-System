@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 const Booking = () => {
   // In real implementation, this would come from useLocation
   const location = useLocation();
@@ -19,7 +21,7 @@ const Booking = () => {
         setFetchingService(true);
         setError("");
         
-        const res = await fetch(`http://localhost:5001/api/v1/service/${serviceId}`, {
+        const res = await fetch(`${apiUrl}/service/${serviceId}`, {
           credentials: 'include'
         });
 
@@ -93,7 +95,7 @@ const Booking = () => {
     ];
 
     try {
-      const response = await fetch("http://localhost:5001/api/v1/appointment/stripepaymentintent", {
+      const response = await fetch(`${apiUrl}/appointment/stripepaymentintent`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { StoreCard } from '../../components/StoreCard';
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 export const ShowStores = () => {
   const [mystore, setMyStore] = useState([]);
 
@@ -8,7 +10,7 @@ export const ShowStores = () => {
   useEffect(() => {
     const fetchStores = async () => {
       try {
-        const res = await fetch('http://localhost:5001/api/v1/store/listAll', {
+        const res = await fetch(`${apiUrl}/store/listAll`, {
           credentials: 'include',
         });
 

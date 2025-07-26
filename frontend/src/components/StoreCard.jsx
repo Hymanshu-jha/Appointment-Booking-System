@@ -3,6 +3,8 @@ import { NavLink } from 'react-router-dom';
 import { Pencil, Trash2 } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 export const categories = [
   'salon',
   'counselling',
@@ -56,7 +58,7 @@ useEffect(() => {
     e.preventDefault();
 
     try {
-      const res = await fetch(`http://localhost:5001/api/v1/store/delete/${_id}`, {
+      const res = await fetch(`${apiUrl}/store/delete/${_id}`, {
         credentials: 'include',
         method: 'DELETE',
       });

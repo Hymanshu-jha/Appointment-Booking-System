@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 export const AddService = () => {
 
   const { storeId } = useParams();
@@ -33,7 +35,7 @@ export const AddService = () => {
     }
 
     // create services
-    const res = await fetch('http://localhost:5001/api/v1/service/create', {
+    const res = await fetch(`${apiUrl}/service/create`, {
       method: 'POST',
       credentials: 'include',
       headers: {

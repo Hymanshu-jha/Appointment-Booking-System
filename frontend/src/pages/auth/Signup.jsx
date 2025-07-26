@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 export const Signup = () => {
 
   const [errorMsg, setErrorMsg] = useState('');
@@ -25,7 +27,7 @@ export const Signup = () => {
 
     const data = { userName, email, phone, password };
 
-    fetch('http://localhost:5001/api/v1/user/signup', {
+    fetch(`${apiUrl}/user/signup`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -53,7 +55,7 @@ export const Signup = () => {
   const handleClickUsingGmail = (e) => {
     e.preventDefault();
 
-    fetch('http://localhost:5001/api/v1/oauth/auth/google', {
+    fetch(`${apiUrl}/oauth/auth/google`, {
       method: 'GET',
       credentials: 'include',
     })

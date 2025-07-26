@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "type": "module",
   "main": "index.js",
-  "scripts": {
-    "start": "node index.js",
-    "dev": "concurrently \"nodemon index.js\" \"nodemon worker.bullmq.js\"",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+"scripts": {
+  "start": "concurrently \"node index.js\" \"node worker.bullmq.js\"",
+  "dev": "concurrently \"nodemon index.js\" \"nodemon worker.bullmq.js\""
+}
+,
   "keywords": [],
   "author": "",
   "license": "ISC",

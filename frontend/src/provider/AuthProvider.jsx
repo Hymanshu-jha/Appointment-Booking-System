@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import AuthContext from '../contexts/AuthContext';
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
     const getMe = async () => {
       try {
-        const res = await fetch("http://localhost:5001/api/v1/oauth/me", {
+        const res = await fetch(`${apiUrl}/oauth/me`, {
           method: "GET",
           credentials: "include",
         });

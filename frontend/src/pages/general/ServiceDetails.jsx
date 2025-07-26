@@ -1,6 +1,9 @@
 import { useParams, Link } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
+
 const ServiceDetails = () => {
   const { serviceId, serviceName } = useParams();
 
@@ -21,7 +24,7 @@ const ServiceDetails = () => {
   const fetchSlots = async () => {
     try {
       const res = await fetch(
-        `http://localhost:5001/api/v1/appointment/getfreeslots?serviceId=${serviceId}&date=${formatDate(
+        `${apiUrl}/appointment/getfreeslots?serviceId=${serviceId}&date=${formatDate(
           selectedDate
         )}`,
         {

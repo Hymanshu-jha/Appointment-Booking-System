@@ -3,6 +3,9 @@ import { useLocation } from 'react-router-dom';
 import { ServiceCard } from '../../components/ServiceCard';
 
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
+
 export const MyServicePage = () => {
 
   const [services, setServices] = useState([]);
@@ -12,7 +15,7 @@ export const MyServicePage = () => {
 
   useEffect(() => {
     const fetchServices = async () => {
-      const response = await fetch(`http://localhost:5001/api/v1/service/myservices`, {
+      const response = await fetch(`${apiUrl}/service/myservices`, {
         credentials: 'include',
       });
       const data = await response.json();

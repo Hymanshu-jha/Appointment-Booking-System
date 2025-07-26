@@ -2,6 +2,7 @@ import React from 'react';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/solid'; // at the top
 import { Outlet, NavLink, useLocation } from 'react-router-dom';
 
+
 export const Mystore = () => {
   const location = useLocation();
 

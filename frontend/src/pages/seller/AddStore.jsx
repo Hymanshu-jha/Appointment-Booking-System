@@ -2,6 +2,8 @@ import React, { useState, useRef , useCallback } from 'react';
 import { categories } from '../../components/StoreCard';
 import LeafLet from '../map/leaflet';
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 export const AddStore = () => {
 
   const coordinates = useRef(null);
@@ -31,7 +33,7 @@ export const AddStore = () => {
     }
 
   try {
-    const res = await fetch('http://localhost:5001/api/v1/store/create', {
+    const res = await fetch(`${apiUrl}/v1/store/create`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
