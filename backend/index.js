@@ -27,14 +27,21 @@ const server = http.createServer(app);
 
 const allowedOrigins = [
   'http://localhost:5173',
-  'https://appointment-booking-system-three.vercel.app', // backend
   'https://appointment-booking-system-eight.vercel.app', // frontend
+  'https://appointment-booking-system-three.vercel.app',  // backend (only needed if you're calling itself)
 ];
 
 app.use(cors({
-  origin: allowedOrigins,
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
 }));
+
 
 const io = new Server(server, {
   cors: {
