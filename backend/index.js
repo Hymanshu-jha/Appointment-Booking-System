@@ -27,7 +27,7 @@ const server = http.createServer(app);
 
 const allowedOrigins = [
   'http://localhost:5173',
-  'https://appointment-booking-system-mu.vercel.app/'
+  'https://appointment-booking-system-mu.vercel.app'
 ];
 
 app.use(cors({
