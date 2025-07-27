@@ -5,7 +5,6 @@ import session from 'express-session';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { Server } from "socket.io";
-import mongoose from 'mongoose';
 import MongoStore from 'connect-mongo';
 
 import { connectDB } from './db/connection/MongoConnection.js';
