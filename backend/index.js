@@ -4,8 +4,9 @@ import http from 'http';
 import session from 'express-session';
 import cors from 'cors';
 import dotenv from 'dotenv';
-
 import { Server } from "socket.io";
+import mongoose from 'mongoose';
+import MongoStore from 'connect-mongo';
 
 import { connectDB } from './db/connection/MongoConnection.js';
 import userRouter from './routes/users.routes.js';
@@ -19,32 +20,59 @@ dotenv.config();
 
 const PORT = process.env.PORT || 5001;
 
-// Wrap everything in an async function instead of top-level await
 const startServer = async () => {
   try {
     const app = express();
     const server = http.createServer(app);
 
+    // Allow frontend URLs
     const allowedOrigins = [
       'http://localhost:5173',
-      'https://appointment-booking-system-tau.vercel.app'
+      'https://appointment-booking-system-tau.vercel.app',
     ];
 
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true,
-}));
+    // Trust reverse proxy (Render)
+    app.set('trust proxy', 1);
 
+    // Enable CORS
+    app.use(cors({
+      origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+          callback(null, true);
+        } else {
+          callback(new Error('Not allowed by CORS'));
+        }
+      },
+      credentials: true,
+    }));
 
     app.use(express.json());
     app.use(cookieParser());
 
+    // Connect to DB before session store
+    console.log('Connecting to database...');
+    await connectDB();
+    console.log('Database connected successfully');
+
+    // SESSION SETUP with MongoDB store
+    app.use(session({
+      name: 'oauth-session',
+      secret: process.env.SESSION_SECRET || 'supersecret',
+      resave: false,
+      saveUninitialized: false,
+      store: MongoStore.create({
+        mongoUrl: process.env.MONGODB_URI,
+        collectionName: 'sessions',
+      }),
+      cookie: {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: 'None', // ← required for cross-site cookies
+        maxAge: 24 * 60 * 60 * 1000, // 1 day
+      },
+    }));
+
+    // Socket.io
     const io = new Server(server, {
       cors: {
         origin: allowedOrigins,
@@ -53,41 +81,31 @@ app.use(cors({
       },
     });
 
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET || 'supersecret',
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "None",
-    },
-  })
-);
-
+    // Log all requests
     app.use((req, res, next) => {
       console.log(`[${req.method}] ${req.originalUrl}`);
       next();
     });
 
-    // Register routes
+    // Routes
     app.use('/api/v1/user', userRouter);
     app.use('/api/v1/oauth', OAuth2Router);
     app.use('/api/v1/store', storeRouter);
     app.use('/api/v1/service', serviceRouter);
     app.use('/api/v1/appointment', appointmentRouter);
 
+    // Welcome Route
     app.get('/', (req, res) => {
       res.send('Welcome to the Appointment Booking System API');
     });
 
-    // Connect to database AFTER setting up routes
-    console.log('Connecting to database...');
-    await connectDB();
-    console.log('Database connected successfully');
+    // Optional: test session
+    app.get('/test-session', (req, res) => {
+      req.session.views = (req.session.views || 0) + 1;
+      res.send(`Session viewed ${req.session.views} times`);
+    });
 
-    // Socket.io connection
+    // Socket events
     io.on("connection", (socket) => {
       socket.on("message", (data) => {
         console.log("Server received:", data);
@@ -95,7 +113,7 @@ app.use(
       });
     });
 
-    // Error handler should be last
+    // Error handler
     app.use(errorHandler);
 
     // Start server
@@ -104,7 +122,7 @@ app.use(
     });
 
   } catch (error) {
-    console.error(error.stack); // 👈 full trace
+    console.error(error.stack);
     console.error('Failed to start server:', error);
     process.exit(1);
   }
@@ -121,5 +139,4 @@ process.on('uncaughtException', (err) => {
   process.exit(1);
 });
 
-// Start the server
 startServer();

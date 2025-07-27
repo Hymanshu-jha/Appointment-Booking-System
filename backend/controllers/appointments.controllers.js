@@ -3,7 +3,11 @@ import Appointment from '../db/schema/appointments.models.js';
 import Service from '../db/schema/services.models.js';
 import { addJobToBullmq } from '../utils/bullmq/producer.bullmq.js';
 
+
+
 const VITE_BASE_URL = process.env.VITE_BASE_URL || 'http://localhost:5173';
+
+
 
 export const getFreeSlots = async (req, res, next) => {
   try {
