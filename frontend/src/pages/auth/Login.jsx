@@ -37,21 +37,12 @@ export const Login = () => {
       });
   };
 
-  const handleClickUsingGmail = (e) => {
-    e.preventDefault();
+const handleClickUsingGmail = (e) => {
+  e.preventDefault();
 
-    fetch(`${apiUrl}/oauth/auth/google`, {
-      method: 'GET',
-      credentials: 'include',
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data?.url) {
-          window.location.href = data.url;
-        }
-      })
-      .catch((err) => console.error(err));
-  };
+  // Directly navigate to backend OAuth endpoint
+  window.location.href = `${apiUrl}/oauth/auth/google`;
+};
 
   return (
     <div className="min-h-screen flex justify-center items-center bg-gradient-to-br from-purple-900 via-gray-900 to-gray-950 px-4">
