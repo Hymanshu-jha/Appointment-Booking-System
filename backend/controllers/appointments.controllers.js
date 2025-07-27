@@ -144,7 +144,7 @@ export const createPaymentController = async (req, res) => {
       payment_method_types: ["card"],
       line_items,
       mode: "payment",
-      success_url: `${VITE_BASE_URL}/appointments/`,
+      success_url: `${VITE_BASE_URL}/appointments`,
       cancel_url: `${VITE_BASE_URL}/cancel`,
       metadata: {
         appointmentId: newAppointment._id.toString(),

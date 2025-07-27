@@ -1,5 +1,8 @@
 import Store from "../db/schema/stores.models.js";
 import Service from "../db/schema/services.models.js";
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 export const createService = async (req, res, next) => {
   try {

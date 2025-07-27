@@ -19,16 +19,18 @@ dotenv.config();
 
 const PORT = process.env.PORT || 5001;
 
-const app = express();
-const server = http.createServer(app);
+// Wrap everything in an async function instead of top-level await
+const startServer = async () => {
+  try {
+    const app = express();
+    const server = http.createServer(app);
 
+    const allowedOrigins = [
+      'http://localhost:5173',
+      'https://appointment-booking-system-tau.vercel.app'
+    ];
 
-const allowedOrigins = [
-  'http://localhost:5173',
-  'https://appointment-booking-system-tau.vercel.app'
-]
-
-app.options('*', cors({
+app.use(cors({
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
@@ -40,57 +42,70 @@ app.options('*', cors({
 }));
 
 
-app.use(express.json());
-app.use(cookieParser());
+    app.use(express.json());
+    app.use(cookieParser());
 
+    const io = new Server(server, {
+      cors: {
+        origin: allowedOrigins,
+        methods: ['GET', 'POST'],
+        credentials: true,
+      },
+    });
 
-const io = new Server(server, {
-  cors: {
-    origin: allowedOrigins,
-    methods: ['GET', 'POST'],
-    credentials: true,
-  },
-});
+    app.use(
+      session({
+        secret: process.env.SESSION_SECRET || 'session_secret',
+        resave: false,
+        saveUninitialized: true,
+      })
+    );
 
+    app.use((req, res, next) => {
+      console.log(`[${req.method}] ${req.originalUrl}`);
+      next();
+    });
 
+    // Register routes
+    app.use('/api/v1/user', userRouter);
+    app.use('/api/v1/oauth', OAuth2Router);
+    app.use('/api/v1/store', storeRouter);
+    app.use('/api/v1/service', serviceRouter);
+    app.use('/api/v1/appointment', appointmentRouter);
 
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET || 'session_secret',
-    resave: false,
-    saveUninitialized: true,
-  })
-);
+    app.get('/', (req, res) => {
+      res.send('Welcome to the Appointment Booking System API');
+    });
 
-app.use((req, res, next) => {
-  console.log(`[${req.method}] ${req.originalUrl}`);
-  next();
-});
+    // Connect to database AFTER setting up routes
+    console.log('Connecting to database...');
+    await connectDB();
+    console.log('Database connected successfully');
 
-app.use('/api/v1/user', userRouter);
-app.use('/api/v1/oauth', OAuth2Router);
-app.use('/api/v1/store', storeRouter);
-app.use('/api/v1/service', serviceRouter);
-app.use('/api/v1/appointment', appointmentRouter);
+    // Socket.io connection
+    io.on("connection", (socket) => {
+      socket.on("message", (data) => {
+        console.log("Server received:", data);
+        socket.send('dsfnkdn');
+      });
+    });
 
+    // Error handler should be last
+    app.use(errorHandler);
 
-app.get('/', (req, res) => {
-  res.send('Welcome to the Appointment Booking System API');
-});
+    // Start server
+    server.listen(PORT, () => {
+      console.log(`Server running on http://localhost:${PORT}`);
+    });
 
-await connectDB();
+  } catch (error) {
+    console.error(error.stack); // 👈 full trace
+    console.error('Failed to start server:', error);
+    process.exit(1);
+  }
+};
 
-// socket.io connection
-io.on("connection", (socket) => {
-  socket.on("message", (data) => {
-    console.log("Server received:", data);
-    socket.send('dsfnkdn');
-  });
-  
-});
-
-app.use(errorHandler);
-
+// Error handlers
 process.on('unhandledRejection', (err) => {
   console.error('Unhandled Rejection:', err.message);
   process.exit(1);
@@ -101,7 +116,5 @@ process.on('uncaughtException', (err) => {
   process.exit(1);
 });
 
-server.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
-
+// Start the server
+startServer();
