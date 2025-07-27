@@ -20,17 +20,15 @@ dotenv.config();
 const PORT = process.env.PORT || 5001;
 
 const app = express();
-app.use(express.json());
-app.use(cookieParser());
 const server = http.createServer(app);
 
 
 const allowedOrigins = [
   'http://localhost:5173',
-  'https://appointment-booking-system-mu.vercel.app'
-];
+  'https://appointment-booking-system-tau.vercel.app'
+]
 
-app.use(cors({
+app.options('*', cors({
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
@@ -40,6 +38,10 @@ app.use(cors({
   },
   credentials: true,
 }));
+
+
+app.use(express.json());
+app.use(cookieParser());
 
 
 const io = new Server(server, {
