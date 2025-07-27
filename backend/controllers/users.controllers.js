@@ -93,8 +93,8 @@ export const signup = async (req, res, next) => {
 
     const options = {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      secure: true,
+      sameSite: "None",
     };
 
     res.cookie("token", token, { ...options, maxAge: 5 * 60 * 1000 }); 
@@ -157,8 +157,8 @@ export const login = async (req, res, next) => {
 
     const options = {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      secure: true,
+      sameSite: "None",
     };
 
     res.cookie("accessToken", accessToken, { ...options, maxAge: 1000 * 60 * 60 }); // 1 hour
@@ -206,8 +206,8 @@ export const logout = async (req, res, next) => {
 
     const cookieOptions = {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      secure: true,
+      sameSite: "None",
     };
 
     res.clearCookie("accessToken", cookieOptions);

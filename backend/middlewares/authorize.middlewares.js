@@ -6,7 +6,7 @@ const authorize = async (req, res, next) => {
     const cookieOptions = {
       httpOnly: true,
       secure: true,
-      sameSite: "Strict",
+      sameSite: "None",
     };
 
     console.log(`entered auth middleware`);
