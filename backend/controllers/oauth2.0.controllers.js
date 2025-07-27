@@ -31,10 +31,8 @@ export const googleAuthPageRedirector = (req, res) => {
     prompt: 'select_account' // ← ADD THIS LINE
   });
 
-  res.json({
-    message: `successfully created authorizationUrl ${authorizationUrl}`,
-    url: authorizationUrl
-  });
+  res.redirect(authorizationUrl);
+
 };
 
 
