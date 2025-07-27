@@ -97,7 +97,7 @@ export const consentPageCallbackHandler = async (req, res) => {
     const cookieOptions = {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production', // true if deployed
-      sameSite: 'Lax',
+      sameSite: 'None', // Allow cross-site cookies
     };
 
     // Set cookies

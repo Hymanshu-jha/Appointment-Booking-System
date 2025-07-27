@@ -53,13 +53,18 @@ app.use(cors({
       },
     });
 
-    app.use(
-      session({
-        secret: process.env.SESSION_SECRET || 'session_secret',
-        resave: false,
-        saveUninitialized: true,
-      })
-    );
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || 'supersecret',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "None",
+    },
+  })
+);
 
     app.use((req, res, next) => {
       console.log(`[${req.method}] ${req.originalUrl}`);
