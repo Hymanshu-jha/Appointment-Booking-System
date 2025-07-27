@@ -60,7 +60,7 @@ const startServer = async () => {
       resave: false,
       saveUninitialized: false,
       store: MongoStore.create({
-        mongoUrl: process.env.MONGODB_URL,
+        mongoUrl: process.env.MONGO_URL,
         collectionName: 'sessions',
       }),
       cookie: {
