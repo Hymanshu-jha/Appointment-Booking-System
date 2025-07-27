@@ -141,6 +141,9 @@ export const getMe = async (req, res, next) => {
 
     const { email, userName, picture } = existsUser;
 
+    console.log("Cookies in request oauth/me:", req.cookies);
+
+
     return res.status(200).json({
       type: 'success',
       user: {
