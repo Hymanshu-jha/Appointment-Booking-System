@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 const apiUrl = import.meta.env.VITE_API_URL;
-const baseUrl = import.meta.env.VITE_BASE_URL;
+const baseUrl = window.location.origin;
 
 export const Login = () => {
   const [email, setEmail] = useState('');
