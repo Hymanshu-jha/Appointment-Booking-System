@@ -110,7 +110,7 @@ export const consentPageCallbackHandler = async (req, res) => {
     });
 
     
-    return res.redirect('${VITE_BASE_URL}/services');
+    return res.redirect(`${VITE_BASE_URL}/services`);
 
   } catch (error) {
     console.error('OAuth callback error:', error);
