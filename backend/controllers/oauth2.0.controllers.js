@@ -40,8 +40,20 @@ export const googleAuthPageRedirector = (req, res) => {
 
 // === Step 2: Handle callback after user consents ===
 export const consentPageCallbackHandler = async (req, res) => {
-  const code = req.query.code;
-  const returnedState = req.query.state;
+  console.log('Consent page callback handler invoked');
+  const code = req?.query.code;
+  const returnedState = req?.query.state;
+
+
+  console.log('Returned state:', returnedState);
+  console.log('Session state:', req.session?.state);
+  console.log('Session ID:', req.sessionID);
+  console.log('Cookies:', req.headers.cookie); // KEY LINE
+  console.log('Query params:', req.query);
+
+  if (!req.session || !req.session.state) {
+  return res.status(400).send('Session not found. Possible session loss or cookie issue.');
+}
 
   if (returnedState !== req.session.state) {
     return res.status(400).send('Invalid state parameter (possible CSRF).');
