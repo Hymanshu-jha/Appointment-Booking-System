@@ -41,7 +41,11 @@ const handleClickUsingGmail = (e) => {
   e.preventDefault();
 
   // Directly navigate to backend OAuth endpoint
-  window.location.href = `${apiUrl}/oauth/auth/google`;
+<form action="https://appointment-booking-system-m8h5.onrender.com/api/v1/oauth/auth/google" method="GET">
+  <button type="submit">Login with Google</button>
+</form>
+
+
 };
 
   return (

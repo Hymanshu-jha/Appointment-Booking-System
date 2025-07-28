@@ -65,7 +65,7 @@ const startServer = async () => {
       }),
       cookie: {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
+        secure: true,
         sameSite: 'None', // ← required for cross-site cookies
         maxAge: 24 * 60 * 60 * 1000, // 1 day
       },
