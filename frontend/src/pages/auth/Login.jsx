@@ -99,12 +99,13 @@ const handleClickUsingGmail = (e) => {
         {/* Google Login Section */}
         <div className="flex-1 flex flex-col items-center justify-center">
           <h1 className="text-gray-800 text-lg mb-4">Or Log in using</h1>
-          <button
-            onClick={handleClickUsingGmail}
-            className="bg-blue-700 hover:bg-blue-800 text-white px-5 py-2 rounded transition"
-          >
-            Google
-          </button>
+         <a
+  href="https://appointment-booking-system-m8h5.onrender.com/api/v1/oauth/auth/google"
+  className="bg-blue-700 hover:bg-blue-800 text-white px-5 py-2 rounded transition text-center block"
+>
+  Google
+</a>
+
         </div>
       </div>
     </div>
