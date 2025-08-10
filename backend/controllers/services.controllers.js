@@ -2,7 +2,11 @@ import Store from "../db/schema/stores.models.js";
 import Service from "../db/schema/services.models.js";
 import dotenv from 'dotenv';
 
-dotenv.config();
+dotenv.config({
+  path: process.env.NODE_ENV === "production" 
+    ? ".env.production" 
+    : ".env.local"
+});
 
 export const createService = async (req, res, next) => {
   try {

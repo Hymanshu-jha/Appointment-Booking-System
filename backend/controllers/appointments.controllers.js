@@ -1,96 +1,151 @@
 import Stripe from 'stripe';
+import mongoose from 'mongoose';
 import Appointment from '../db/schema/appointments.models.js';
 import Service from '../db/schema/services.models.js';
 import { addJobToBullmq } from '../utils/bullmq/producer.bullmq.js';
 
 
 
-const VITE_BASE_URL = process.env.VITE_BASE_URL || 'http://localhost:5173';
+const VITE_BASE_URL = process.env.VITE_BASE_URL;
 
 
+// Helper to convert minutes back to time string e.g. "11:30 am"
+function minutesToTimeString(minutes) {
+  let h = Math.floor(minutes / 60);
+  let m = minutes % 60;
+  const meridian = h >= 12 ? 'pm' : 'am';
+  if (h > 12) h -= 12;
+  if (h === 0) h = 12;
+  return `${h}:${m.toString().padStart(2, '0')} ${meridian}`;
+}
 
-export const getFreeSlots = async (req, res, next) => {
+export const getFreeSlots = async (req, res) => {
   try {
+    // Extract variables from query string
     const { serviceId, date } = req.query;
 
-    console.log("Requested serviceId:", req.query.serviceId);
+    console.log("Service ID from query:", serviceId);
+    console.log("Date from query:", date);
 
-    if (!date) return res.status(400).json({ success: false, message: "Date is required" });
-
-    const service = await Service.findById(serviceId);
-    if (!service) return res.status(404).json({ success: false, message: "Service not found" });
-
-    const { workingHours, serviceTime } = service;
-
-    // Convert working hours to minutes
-    const workStart = workingHours.start * 60;
-    const workEnd = workingHours.end * 60;
-
-    // Generate all possible slots in minutes
-    const allSlots = [];
-    for (let t = workStart; t + serviceTime <= workEnd; t += serviceTime) {
-      allSlots.push([t, t + serviceTime]);
+    if (!serviceId) {
+      return res.status(400).json({ success: false, message: "Service ID is required" });
     }
 
-    // Fetch all appointments for this service on the given date
-    const startOfDay = new Date(date + "T00:00:00");
-    const endOfDay = new Date(date + "T23:59:59");
+    if (!mongoose.Types.ObjectId.isValid(serviceId)) {
+      return res.status(400).json({ success: false, message: "Invalid serviceId" });
+    }
 
+    if (!date) {
+      return res.status(400).json({ success: false, message: "Date is required" });
+    }
+
+    const dayStart = new Date(date);
+    if (isNaN(dayStart.getTime())) {
+      return res.status(400).json({ success: false, message: "Invalid date format" });
+    }
+    dayStart.setHours(0, 0, 0, 0);
+
+    const dayEnd = new Date(dayStart);
+    dayEnd.setDate(dayEnd.getDate() + 1);
+
+    // fetch the service
+    const service = await Service.findById(serviceId);
+    if (!service) {
+      return res.status(404).json({
+        success: false,
+        message: "Service not found"
+      });
+    }
+
+    // now look at the working hours and service time of the service
+    const workingHours = service.workingHours;
+    const serviceTime = service.serviceTime;
+    const freeSlots = [];
+
+    // fetch appointments on that date for that service
     const appointments = await Appointment.find({
       service: serviceId,
-      start: { $gte: startOfDay, $lte: endOfDay },
+      appointmentDate: { 
+        $gte: dayStart,
+        $lt: dayEnd
+      }
     });
 
-    // Build busy slot time ranges in minutes
-    const busySlots = appointments.map(app => {
-      const startMinutes = app.start.getHours() * 60 + app.start.getMinutes();
-      const endMinutes = app.end.getHours() * 60 + app.end.getMinutes();
-      return [startMinutes, endMinutes];
+    // store all appointments' time into a bookedSlotsArray
+    const bookedSlotsArray = appointments.map((appointment) => {
+      const appointmentTime = appointment.appointmentTime;
+
+      // Parse start time
+      const [startTime, startMeridianRaw] = appointmentTime.start.toLowerCase().split(' ');
+      const startMeridian = startMeridianRaw.toLowerCase();
+      const [startHourStr, startMinuteStr] = startTime.split(':');
+      let startHour = Number(startHourStr);
+      const startMinute = Number(startMinuteStr);
+      if (startMeridian === 'pm' && startHour !== 12) startHour += 12;
+      if (startMeridian === 'am' && startHour === 12) startHour = 0;
+      const start = startHour * 60 + startMinute;
+
+      // Parse end time
+      const [endTime, endMeridianRaw] = appointmentTime.end.toLowerCase().split(' ');
+      const endMeridian = endMeridianRaw.toLowerCase();
+      const [endHourStr, endMinuteStr] = endTime.split(':');
+      let endHour = Number(endHourStr);
+      const endMinute = Number(endMinuteStr);
+      if (endMeridian === 'pm' && endHour !== 12) endHour += 12;
+      if (endMeridian === 'am' && endHour === 12) endHour = 0;
+      const end = endHour * 60 + endMinute;
+
+      return { start, end };
     });
 
-    // Sort busy slots
-    busySlots.sort((a, b) => a[0] - b[0]);
+    // Sort booked slots by start time
+    bookedSlotsArray.sort((a, b) => a.start - b.start);
 
-    // Filter out busy slots from all slots
-    const freeSlots = allSlots.filter(([start, end]) => {
-      return !busySlots.some(([busyStart, busyEnd]) =>
-        Math.max(start, busyStart) < Math.min(end, busyEnd) // overlap condition
-      );
+    let bookedIndex = 0; // pointer to current booked slot
+
+    // Iterate over working hours in serviceTime chunks
+    for (
+      let slotStart = Number(workingHours.start) * 60;
+      slotStart + serviceTime <= Number(workingHours.end) * 60;
+      slotStart += serviceTime
+    ) {
+      const slotEnd = slotStart + serviceTime;
+
+      // advance bookedIndex while current booked slot ends before slotStart
+      while (
+        bookedIndex < bookedSlotsArray.length &&
+        bookedSlotsArray[bookedIndex].end <= slotStart
+      ) {
+        bookedIndex++;
+      }
+
+      // if bookedIndex out of bounds or no overlap with current booked slot, this slot is free
+      if (
+        bookedIndex === bookedSlotsArray.length ||
+        bookedSlotsArray[bookedIndex].start >= slotEnd
+      ) {
+        freeSlots.push({
+          start: minutesToTimeString(slotStart),
+          end: minutesToTimeString(slotEnd),
+        });
+      }
+    }
+
+    return res.status(200).json({
+      slots: freeSlots,
+      success: true,
     });
-
-// Helper to convert minutes to readable time (e.g. 600 → "10:00 AM")
-const formatTime = (minutes) => {
-  const h = Math.floor(minutes / 60);
-  const m = minutes % 60;
-  const d = new Date();
-  d.setHours(h, m, 0);
-  return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-};
-
-// Merge and mark all slots
-const mergedSlots = allSlots.map(([start, end]) => {
-  const isBusy = busySlots.some(([busyStart, busyEnd]) =>
-    Math.max(start, busyStart) < Math.min(end, busyEnd)
-  );
-
-  return {
-    start: formatTime(start),
-    end: formatTime(end),
-    available: !isBusy
-  };
-});
-
-return res.status(200).json({
-  success: true,
-  slots: mergedSlots
-});
-
-
   } catch (error) {
-    console.error("Error in getFreeSlots:", error);
-    next(error);
+    console.error('Error fetching free slots:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Error while fetching free slots',
+    });
   }
 };
+
+
+
 
 
 

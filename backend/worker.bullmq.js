@@ -4,7 +4,11 @@ import sendVerificationMail from './utils/nodemailer/transporter.nodemailer.js';
 import dotenv from 'dotenv';
 import Appointment from './db/schema/appointments.models.js';
 
-dotenv.config();
+dotenv.config({
+  path: process.env.NODE_ENV === "production" 
+    ? ".env.production" 
+    : ".env.local"
+});
 
 // Redis connection
 const REDIS_TOKEN = process.env.REDIS_TOKEN;

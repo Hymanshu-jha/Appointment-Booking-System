@@ -4,7 +4,11 @@ import { addJobToBullmq } from '../utils/bullmq/producer.bullmq.js';
 import { generateAccessToken, generateRefreshToken , verifyToken } from "../utils/jsonwebtoken/jsonwebtoken.js";
 
 import dotenv from 'dotenv';
-dotenv.config();
+dotenv.config({
+  path: process.env.NODE_ENV === "production" 
+    ? ".env.production" 
+    : ".env.local"
+});
 
 
 export const signup = async (req, res, next) => {
@@ -93,8 +97,8 @@ export const signup = async (req, res, next) => {
 
     const options = {
       httpOnly: true,
-      secure: true,
-      sameSite: "None",
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
     };
 
     res.cookie("token", token, { ...options, maxAge: 5 * 60 * 1000 }); 
@@ -157,8 +161,8 @@ export const login = async (req, res, next) => {
 
     const options = {
       httpOnly: true,
-      secure: true,
-      sameSite: "None",
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
     };
 
     res.cookie("accessToken", accessToken, { ...options, maxAge: 1000 * 60 * 60 }); // 1 hour
@@ -206,8 +210,8 @@ export const logout = async (req, res, next) => {
 
     const cookieOptions = {
       httpOnly: true,
-      secure: true,
-      sameSite: "None",
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
     };
 
     res.clearCookie("accessToken", cookieOptions);

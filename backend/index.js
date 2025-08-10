@@ -15,7 +15,11 @@ import storeRouter from './routes/stores.routes.js';
 import serviceRouter from './routes/services.routes.js';
 import appointmentRouter from './routes/appointments.routes.js';
 
-dotenv.config();
+dotenv.config({
+  path: process.env.NODE_ENV === "production" 
+    ? ".env.production" 
+    : ".env.local"
+});
 
 const PORT = process.env.PORT || 5001;
 
@@ -65,8 +69,8 @@ const startServer = async () => {
       }),
       cookie: {
         httpOnly: true,
-        secure: true,
-        sameSite: 'None', // ← required for cross-site cookies
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? "None" : "Lax", // ← required for cross-site cookies
         maxAge: 24 * 60 * 60 * 1000, // 1 day
       },
     }));

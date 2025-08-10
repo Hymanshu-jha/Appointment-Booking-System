@@ -19,24 +19,6 @@ export default function ServicesDisplayPage() {
   const routeLocation = useLocation();
 
 
-useEffect(() => {
-  // Initialize search term from URL if available 
-  const fetchAndSetUser = async () => {
-  try {
-    const res = await fetch(`${apiUrl}/oauth/me`, {
-      method: 'GET',
-      credentials: 'include',
-    });
-    const data = await res.json();
-    if (data?.user) {
-      setUser(data.user); // Comes from AuthContext
-    }
-  } catch (err) {
-    console.error('Error fetching user after OAuth:', err);
-  }
-};
-fetchAndSetUser();
-}, []);
 
   useEffect(() => {
   if (!searchTerm) {

@@ -4,7 +4,11 @@ import generateVerificationEmail from "./verificationMailTemplate.js";
 const VITE_API_URL = process.env.VITE_API_URL || 'http://localhost:5001/api/v1';
 
 import dotenv from 'dotenv';
-dotenv.config();
+dotenv.config({
+  path: process.env.NODE_ENV === "production" 
+    ? ".env.production" 
+    : ".env.local"
+});
 
 const sendVerificationMail = async ({ to, token, username }) => {
   const transport = nodemailer.createTransport({

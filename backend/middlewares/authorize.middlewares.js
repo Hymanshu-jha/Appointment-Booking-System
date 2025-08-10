@@ -5,8 +5,8 @@ const authorize = async (req, res, next) => {
   try {
     const cookieOptions = {
       httpOnly: true,
-      secure: true,
-      sameSite: "None",
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
     };
 
     console.log(`entered auth middleware`);

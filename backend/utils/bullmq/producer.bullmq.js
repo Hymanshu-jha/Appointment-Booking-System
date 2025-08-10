@@ -2,7 +2,11 @@ import { Queue } from 'bullmq';
 import Redis from 'ioredis';
 import dotenv from 'dotenv';
 
-dotenv.config();
+dotenv.config({
+  path: process.env.NODE_ENV === "production" 
+    ? ".env.production" 
+    : ".env.local"
+});
 
 const REDIS_TOKEN = process.env.REDIS_TOKEN;
 console.log('connection initiated in bullmq producer');

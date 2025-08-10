@@ -1,13 +1,16 @@
 import { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 
+
+
+
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const Booking = () => {
   // In real implementation, this would come from useLocation
   const location = useLocation();
   const { selectedDate, selectedSlot, serviceId, serviceName } = location.state || {};
-
+console.log("Booking page mounted", location?.state);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");

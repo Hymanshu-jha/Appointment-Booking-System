@@ -11,8 +11,14 @@ const ServiceDetails = () => {
   const [slots, setSlots] = useState([]);
   const [selectedSlot, setSelectedSlot] = useState(null);
 
-  // Format date to YYYY-MM-DD
-  const formatDate = (date) => date.toISOString().split("T")[0];
+  function formatDate(date) {
+  const year = date.getFullYear();
+  // Months are zero-based in JS, so add 1 and pad with 0
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`; // e.g. 2025-08-11
+}
+
 
   // Get next 3 days
   const nextThreeDays = [...Array(3)].map((_, i) => {
@@ -38,7 +44,7 @@ const ServiceDetails = () => {
 
       const data = await res.json();
 
-      setSlots(data?.slots || []);
+      setSlots(data?.freeSlots || []);
       setSelectedSlot(null); // reset on date change
     } catch (err) {
       console.error("Error fetching slots:", err);

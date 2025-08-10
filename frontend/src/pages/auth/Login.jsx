@@ -37,16 +37,7 @@ export const Login = () => {
       });
   };
 
-const handleClickUsingGmail = (e) => {
-  e.preventDefault();
 
-  // Directly navigate to backend OAuth endpoint
-<form action="https://appointment-booking-system-m8h5.onrender.com/api/v1/oauth/auth/google" method="GET">
-  <button type="submit">Login with Google</button>
-</form>
-
-
-};
 
   return (
     <div className="min-h-screen flex justify-center items-center bg-gradient-to-br from-purple-900 via-gray-900 to-gray-950 px-4">
@@ -100,7 +91,7 @@ const handleClickUsingGmail = (e) => {
         <div className="flex-1 flex flex-col items-center justify-center">
           <h1 className="text-gray-800 text-lg mb-4">Or Log in using</h1>
          <a
-  href="https://appointment-booking-system-m8h5.onrender.com/api/v1/oauth/auth/google"
+  href={`${apiUrl}/oauth/auth/google`}
   className="bg-blue-700 hover:bg-blue-800 text-white px-5 py-2 rounded transition text-center block"
 >
   Google

@@ -7,12 +7,13 @@ const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 const GOOGLE_REDIRECT_URI = process.env.GOOGLE_REDIRECT_URI;
 
-const VITE_BASE_URL = process.env.VITE_BASE_URL || 'http://localhost:5173';
+const VITE_BASE_URL = process.env.VITE_BASE_URL;
+
 
 const oauth2Client = new google.auth.OAuth2(
   GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET,
-  GOOGLE_REDIRECT_URI
+  "http://localhost:5001/api/v1/oauth/oauth2callback" 
 );
 
 // Scopes just for basic login (email, profile)
@@ -106,8 +107,8 @@ export const consentPageCallbackHandler = async (req, res) => {
     // Secure cookie options
     const cookieOptions = {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', // true if deployed
-      sameSite: 'None', // Allow cross-site cookies
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax", // Allow cross-site cookies
     };
 
     // Set cookies
@@ -119,8 +120,10 @@ export const consentPageCallbackHandler = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
+
+
+   return res.redirect('http://localhost:5173/services');
     
-    return res.redirect(`${VITE_BASE_URL}/services`);
 
   } catch (error) {
     console.error('OAuth callback error:', error);

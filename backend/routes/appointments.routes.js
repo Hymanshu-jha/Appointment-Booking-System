@@ -7,7 +7,11 @@ import {
 } from '../controllers/appointments.controllers.js'
 import dotenv from 'dotenv';
 import authorize from '../middlewares/authorize.middlewares.js';
-dotenv.config();
+dotenv.config({
+  path: process.env.NODE_ENV === "production" 
+    ? ".env.production" 
+    : ".env.local"
+});
 const appointmentRouter = express.Router();
 
 appointmentRouter.get('/getfreeslots', getFreeSlots);
