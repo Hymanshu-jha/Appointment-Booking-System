@@ -4,6 +4,7 @@ import Appointment from '../db/schema/appointments.models.js';
 import Service from '../db/schema/services.models.js';
 import { addJobToBullmq } from '../utils/bullmq/producer.bullmq.js';
 import { sign } from 'crypto';
+import dotenv from 'dotenv';
 
 dotenv.config({
   path: process.env.NODE_ENV === "production" 
