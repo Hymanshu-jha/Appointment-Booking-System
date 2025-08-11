@@ -9,6 +9,7 @@ import { addJobToBullmq } from '../utils/bullmq/producer.bullmq.js';
 const VITE_BASE_URL = process.env.VITE_BASE_URL;
 
 
+
 // Helper to convert minutes back to time string e.g. "11:30 am"
 function minutesToTimeString(minutes) {
   let h = Math.floor(minutes / 60);
@@ -17,6 +18,20 @@ function minutesToTimeString(minutes) {
   if (h > 12) h -= 12;
   if (h === 0) h = 12;
   return `${h}:${m.toString().padStart(2, '0')} ${meridian}`;
+}
+
+// Helper to parse time string to minutes
+function timeStringToMinutes(timeString) {
+  const [time, meridianRaw] = timeString.toLowerCase().split(' ');
+  const meridian = meridianRaw.toLowerCase();
+  const [hourStr, minuteStr] = time.split(':');
+  let hour = Number(hourStr);
+  const minute = Number(minuteStr);
+  
+  if (meridian === 'pm' && hour !== 12) hour += 12;
+  if (meridian === 'am' && hour === 12) hour = 0;
+  
+  return hour * 60 + minute;
 }
 
 export const getFreeSlots = async (req, res) => {
@@ -62,6 +77,21 @@ export const getFreeSlots = async (req, res) => {
     const serviceTime = service.serviceTime;
     const freeSlots = [];
 
+    console.log("Working hours:", workingHours);
+    console.log("Service time:", serviceTime);
+
+    // Parse working hours to minutes (they are stored as numbers representing hours)
+    let workingStartMinutes = workingHours.start * 60;  // convert hours to minutes
+    let workingEndMinutes = workingHours.end * 60;
+    
+    // Handle case where end time appears to be in PM (like 5 = 5 PM = 17:00)
+    if (workingEndMinutes <= workingStartMinutes) {
+      workingEndMinutes += 12 * 60;  // assume PM, so add 12 hours
+    }
+
+    console.log("Working start minutes:", workingStartMinutes);
+    console.log("Working end minutes:", workingEndMinutes);
+
     // fetch appointments on that date for that service
     const appointments = await Appointment.find({
       service: serviceId,
@@ -75,38 +105,23 @@ export const getFreeSlots = async (req, res) => {
     const bookedSlotsArray = appointments.map((appointment) => {
       const appointmentTime = appointment.appointmentTime;
 
-      // Parse start time
-      const [startTime, startMeridianRaw] = appointmentTime.start.toLowerCase().split(' ');
-      const startMeridian = startMeridianRaw.toLowerCase();
-      const [startHourStr, startMinuteStr] = startTime.split(':');
-      let startHour = Number(startHourStr);
-      const startMinute = Number(startMinuteStr);
-      if (startMeridian === 'pm' && startHour !== 12) startHour += 12;
-      if (startMeridian === 'am' && startHour === 12) startHour = 0;
-      const start = startHour * 60 + startMinute;
-
-      // Parse end time
-      const [endTime, endMeridianRaw] = appointmentTime.end.toLowerCase().split(' ');
-      const endMeridian = endMeridianRaw.toLowerCase();
-      const [endHourStr, endMinuteStr] = endTime.split(':');
-      let endHour = Number(endHourStr);
-      const endMinute = Number(endMinuteStr);
-      if (endMeridian === 'pm' && endHour !== 12) endHour += 12;
-      if (endMeridian === 'am' && endHour === 12) endHour = 0;
-      const end = endHour * 60 + endMinute;
+      // Parse start and end times (assuming they are time strings like "11:30 am")
+      const start = timeStringToMinutes(appointmentTime.start);
+      const end = timeStringToMinutes(appointmentTime.end);
 
       return { start, end };
     });
 
     // Sort booked slots by start time
     bookedSlotsArray.sort((a, b) => a.start - b.start);
+    console.log(`bookedSlotsArray: `, bookedSlotsArray);
 
     let bookedIndex = 0; // pointer to current booked slot
 
     // Iterate over working hours in serviceTime chunks
     for (
-      let slotStart = Number(workingHours.start) * 60;
-      slotStart + serviceTime <= Number(workingHours.end) * 60;
+      let slotStart = workingStartMinutes;
+      slotStart + serviceTime <= workingEndMinutes;
       slotStart += serviceTime
     ) {
       const slotEnd = slotStart + serviceTime;
@@ -127,12 +142,21 @@ export const getFreeSlots = async (req, res) => {
         freeSlots.push({
           start: minutesToTimeString(slotStart),
           end: minutesToTimeString(slotEnd),
+          available: true
         });
       }
     }
 
+
+console.log('serviceTime:', serviceTime);
+console.log('workingStartMinutes:', workingStartMinutes);
+console.log('workingEndMinutes:', workingEndMinutes);
+console.log('freeSlots length:', freeSlots.length);
+console.log('freeSlots content:', freeSlots);
+
+
     return res.status(200).json({
-      slots: freeSlots,
+      freeSlots,
       success: true,
     });
   } catch (error) {
@@ -143,7 +167,6 @@ export const getFreeSlots = async (req, res) => {
     });
   }
 };
-
 
 
 

@@ -95,6 +95,34 @@ export const listServices = async (req, res, next) => {
 };
 
 
+export const getServiceDetails = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const service = await Service.findOne({
+      _id: id
+    }).populate("store");
+
+    if (!service) {
+      return res.status(404).json({
+        success: false,
+        message: "Service not found or not authorized.",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      service,
+    });
+  } catch (error) {
+    console.error("Error in getService:", error);
+    next(error);
+  }
+};
+
+
+
+
 export const getService = async (req, res, next) => {
   try {
     const { id } = req.params;
