@@ -49,7 +49,14 @@ const startServer = async () => {
       credentials: true,
     }));
 
-    app.use(express.json());
+    // Use JSON parser globally for all routes EXCEPT webhook route:
+app.use((req, res, next) => {
+  if (req.originalUrl === '/api/v1/appointment/webhook') {
+    next(); // skip parsing for webhook
+  } else {
+    express.json()(req, res, next);
+  }
+});
     app.use(cookieParser());
 
     // Connect to DB before session store
