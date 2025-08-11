@@ -3,8 +3,13 @@ import mongoose from 'mongoose';
 import Appointment from '../db/schema/appointments.models.js';
 import Service from '../db/schema/services.models.js';
 import { addJobToBullmq } from '../utils/bullmq/producer.bullmq.js';
+import { sign } from 'crypto';
 
-
+dotenv.config({
+  path: process.env.NODE_ENV === "production" 
+    ? ".env.production" 
+    : ".env.local"
+});
 
 const VITE_BASE_URL = process.env.VITE_BASE_URL;
 
@@ -261,7 +266,7 @@ export const StripeWebhookController = async (req, res) => {
     );
   } catch (err) {
     console.error("Webhook signature verification failed:", err.message);
-    return res.status(400).send(`Webhook Error: ${err.message}`);
+    return res.status(400).json({signature: sign, message: `Webhook Error: ${err.message}`});
   }
 
   if (event.type !== "checkout.session.completed") {
