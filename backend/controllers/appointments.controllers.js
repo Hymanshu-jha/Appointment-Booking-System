@@ -6,14 +6,15 @@ import { addJobToBullmq } from '../utils/bullmq/producer.bullmq.js';
 import { sign } from 'crypto';
 import dotenv from 'dotenv';
 
+
 dotenv.config({
   path: process.env.NODE_ENV === "production" 
     ? ".env.production" 
     : ".env.local"
 });
 
-const VITE_BASE_URL = process.env.VITE_BASE_URL;
 
+const VITE_BASE_URL = process.env.VITE_BASE_URL;
 
 
 // Helper to convert minutes back to time string e.g. "11:30 am"
@@ -267,6 +268,7 @@ export const StripeWebhookController = async (req, res) => {
     );
   } catch (err) {
     console.error("Webhook signature verification failed:", err.message);
+    console.error("signature: ", sign);
     return res.status(400).json({signature: sign, message: `Webhook Error: ${err.message}`});
   }
 
