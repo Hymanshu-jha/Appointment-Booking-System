@@ -15,6 +15,7 @@ console.log("Booking page mounted", location?.state);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [fetchingService, setFetchingService] = useState(true);
+  
   const serviceRef = useRef(null);
   const [readyToProceed, setReadyToProceed] = useState(false);
 
@@ -24,7 +25,7 @@ console.log("Booking page mounted", location?.state);
         setFetchingService(true);
         setError("");
         
-        const res = await fetch(`${apiUrl}/service/${serviceId}`, {
+        const res = await fetch(`${apiUrl}/service/getServiceDetails/${serviceId}`, {
           credentials: 'include'
         });
 

@@ -14,6 +14,8 @@ import AuthProvider from "./provider/AuthProvider";
 import { Analytics } from "./pages/seller/Analytics";
 import { MyServices } from "./pages/seller/MyServices";
 import Appointments from "./pages/general/Appointments";
+import BoughtAppointments from "./pages/general/BoughtAppointments";
+import SoldAppointments from "./pages/general/SoldAppointments";
 import ServiceLayout from "./pages/general/ServiceLayout";
 import { ProtectedRoute } from "./protected/ProtectedRoute";
 import ServiceDetails from "./pages/general/ServiceDetails";
@@ -22,8 +24,6 @@ import { AddStore } from "./pages/seller/AddStore";
 import { Mystore } from "./pages/seller/MyStore";
 import { MyServicePage } from "./pages/seller/MyServicePage";
 import { AddService } from "./pages/seller/AddService";
-import { AppointmentStatus } from "./pages/general/AppointmentStatus";
-import { AppointmentLayout } from "./pages/general/AppointmentLayout";
 import PaymentNotProcessed from "./pages/general/PaymentNotProcessed";
 
 
@@ -59,32 +59,29 @@ function App() {
           </Route>
 
           {/* appointments routes */}
-          <Route
-            path="/appointments"
-            element={
-              <ProtectedRoute>
-                <Appointments />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/appointments/:appointmentId"
-            element={
-              <ProtectedRoute>
-                <AppointmentLayout />
-              </ProtectedRoute>
-            }
-          >
-            <Route
-              path="status"
-              element={<AppointmentStatus />}
-            >
+
+<Route
+  path="/appointments"
+  element={
+    <ProtectedRoute>
+      <Appointments /> {/* This will be the layout */}
+    </ProtectedRoute>
+  }
+>
+  {/* Default index = bought */}
+  <Route index element={<BoughtAppointments />} />
+  {/* Sold */}
+  <Route path="sold" element={<SoldAppointments />} />
+</Route>
+
+     
+
               <Route
-                path="chatpage"
+                path="/appointments/:id/chatpage"
                 element={<Chatpage />}
               />
-            </Route>
-          </Route>
+
+
 
           {/* seller protected routes */}
           <Route

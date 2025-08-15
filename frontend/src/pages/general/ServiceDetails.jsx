@@ -43,6 +43,7 @@ const ServiceDetails = () => {
       }
 
       const data = await res.json();
+      console.log('freeSlots:', data?.freeSlots);
 
       setSlots(data?.freeSlots || []);
       setSelectedSlot(null); // reset on date change

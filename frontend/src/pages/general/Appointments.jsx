@@ -1,41 +1,40 @@
-// Appointments.jsx
-import { Link, Outlet } from "react-router-dom";
-
-const mockAppointments = [
-  { id: "1", service: "Dental Cleaning" },
-  { id: "2", service: "Haircut" },
-];
+import { NavLink, Outlet } from "react-router-dom";
 
 const Appointments = () => {
   return (
     <div className="p-8 min-h-screen bg-black text-white">
-     <h2 className="text-3xl font-bold text-purple-400 mb-6 text-center">
-  Your Appointments
-</h2>
+      <h2 className="text-3xl font-bold text-purple-400 mb-6 text-center">
+        Your Appointments
+      </h2>
 
-      
-      <ul className="space-y-5 max-w-3xl mx-auto">
-        {mockAppointments.map((appt) => (
-          <li
-            key={appt.id}
-            className="flex justify-between items-center bg-black/70 border border-purple-700 p-5 rounded-xl shadow-lg backdrop-blur-sm"
-          >
-            <span className="text-white font-semibold text-lg">
-              {appt.service}
-            </span>
-            <Link
-              to={`${appt.id}/status`}
-              className="px-4 py-2 bg-gradient-to-r from-purple-700 to-purple-900 text-white rounded-lg hover:from-purple-800 hover:to-purple-950 transition-transform transform hover:scale-105"
-            >
-              Status
-            </Link>
-          </li>
-        ))}
-      </ul>
+      {/* Navigation */}
+      <div className="flex justify-center gap-6 mb-8">
+        <NavLink
+          to=""
+          end
+          className={({ isActive }) =>
+            `px-4 py-2 rounded-lg ${
+              isActive ? "bg-purple-500 text-white" : "bg-gray-700 text-gray-300"
+            }`
+          }
+        >
+          Bought
+        </NavLink>
 
-      <div className="mt-10">
-        <Outlet />
+        <NavLink
+          to="sold"
+          className={({ isActive }) =>
+            `px-4 py-2 rounded-lg ${
+              isActive ? "bg-purple-500 text-white" : "bg-gray-700 text-gray-300"
+            }`
+          }
+        >
+          Sold
+        </NavLink>
       </div>
+
+      {/* Nested pages will render here */}
+      <Outlet />
     </div>
   );
 };

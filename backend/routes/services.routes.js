@@ -9,9 +9,14 @@ import {
   updateService,
   deleteService,
   listAll,
+  getServiceDetails
 } from "../controllers/services.controllers.js";
 
 const serviceRouter = express.Router();
+
+serviceRouter.get('/getServiceDetails/:id', authorize, getServiceDetails);
+
+serviceRouter.get("/getServiceById/:id", authorize, getService);
 
 serviceRouter.post(
   "/create",
@@ -22,7 +27,7 @@ serviceRouter.post(
 
 serviceRouter.get("/myservices", authorize, listServices);
 serviceRouter.get("/listAll", listAll);
-serviceRouter.get("/:id", authorize, getService);
+
 
 
 

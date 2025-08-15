@@ -2,6 +2,7 @@ import express from 'express';
 import bodyParser from "body-parser";
 import { 
     createPaymentController,
+    fetchAppointmentsByUserId,
     getFreeSlots,
     StripeWebhookController 
 } from '../controllers/appointments.controllers.js'
@@ -21,6 +22,8 @@ appointmentRouter.post(
   bodyParser.raw({ type: "application/json" }),
   StripeWebhookController
 );
+
+appointmentRouter.get('/fetchAppointmentsByUserId/:userId', authorize, fetchAppointmentsByUserId);
 
 
 export default appointmentRouter;

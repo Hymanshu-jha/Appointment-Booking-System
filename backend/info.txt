@@ -9,12 +9,10 @@ Application type: Web application, name: webclient1
 client_id:
 811182347434-sihphajmoq5vjvjmfamk2eet6vsdnacc.apps.googleusercontent.com
 
+stripe account holder: himanshujhaa4262@gmail.com
 
 ................................NOTES.....................NOTES..............................................
 
 
-to fix:  in serviceDetails.jsx free slots are not rendering because
-         we are sending freeSlots object from backend but frontend wants 
-         both free and filled slots , that's why it checks if free slots.
-         so we must add one more field as filled/available in slot object
+
 

@@ -41,6 +41,7 @@ function timeStringToMinutes(timeString) {
   return hour * 60 + minute;
 }
 
+
 export const getFreeSlots = async (req, res) => {
   try {
     // Extract variables from query string
@@ -177,11 +178,12 @@ console.log('freeSlots content:', freeSlots);
 
 
 
-
-
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
   apiVersion: '2023-10-16',
 });
+
+
+
 
 export const createPaymentController = async (req, res) => {
   try {
@@ -439,6 +441,7 @@ export const refundAppointmentPayment = async (req, res) => {
 };
 
 
+
 // { APPOINTMENT PARTIAL REFUND ROUTE }
 export const partialRefundAppointmentPayment = async (req, res) => {
   try {
@@ -504,4 +507,35 @@ export const partialRefundAppointmentPayment = async (req, res) => {
 
 
 
-// { APPOINTMENT REVIEW AND RATING ROUTE }
+export const fetchAppointmentsByUserId = async (req, res) => {
+  try {
+    const userId = req.user?._id;
+    if (!userId) {
+      return res.status(401).json({
+        message: 'User not authenticated',
+        success: false,
+      });
+    }
+
+    const appointments = await Appointment.find({ client: userId });
+
+    if (appointments.length === 0) {
+      return res.status(200).json({
+        message: 'No appointments found for this user',
+        appointments: [],
+        success: true,
+      });
+    }
+
+    return res.status(200).json({
+      appointments,
+      success: true,
+    });
+  } catch (error) {
+    console.error('Error fetching appointments:', error);
+    return res.status(500).json({
+      message: 'Error while fetching appointments by user ID',
+      success: false,
+    });
+  }
+};
