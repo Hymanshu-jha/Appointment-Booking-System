@@ -46,4 +46,4 @@ backend_test:
       junit: backend/junit.xml
     paths:
       - backend/coverage/
-    expire_in: 1 week
+    expire_in: 2 week
