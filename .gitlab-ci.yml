@@ -38,7 +38,6 @@ backend_test:
     - backend_build
   script:
     - echo "Running backend integration tests..."
-    - cd backend
     - npm run test:backend -- --ci --runInBand
   artifacts:
     when: always
