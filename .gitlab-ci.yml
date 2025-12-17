@@ -1,48 +1,22 @@
-stages:
-  - build
-  - test
-
-# --------------------
-# Global configuration
-# --------------------
-image: node:18
-
-cache:
-  key: ${CI_COMMIT_REF_SLUG}
-  paths:
-    - backend/node_modules/
-
-variables:
-  NODE_ENV: test
-
-# --------------------
-# Build Backend
-# --------------------
 backend_build:
   stage: build
   script:
-    - echo "Installing backend dependencies..."
     - cd backend
-    - npm install
+    - npm install          # backend-only dependencies
   artifacts:
     paths:
       - backend/node_modules/
     expire_in: 1 hour
 
-# --------------------
-# Test Backend
-# --------------------
 backend_test:
   stage: test
-  dependencies:
-    - backend_build
   script:
-    - echo "Running backend integration tests..."
+    - npm install           # install root/test dependencies
     - npm run test:backend -- --ci --runInBand
+  dependencies:
+    - backend_build          # pulls backend/node_modules artifacts
   artifacts:
     when: always
-    reports:
-      junit: backend/junit.xml
     paths:
       - backend/coverage/
-    expire_in: 2 week
+      - junit.xml
