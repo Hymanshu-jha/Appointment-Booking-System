@@ -1,8 +1,19 @@
+image: node:18
+
+stages:
+  - build
+  - test
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}-root
+  paths:
+    - node_modules/
+
 backend_build:
   stage: build
   script:
     - cd backend
-    - npm install          # backend-only dependencies
+    - npm install
   artifacts:
     paths:
       - backend/node_modules/
@@ -10,11 +21,13 @@ backend_build:
 
 backend_test:
   stage: test
-  script:
-    - npm install           # install root/test dependencies
-    - npm run test:backend -- --ci --runInBand
   dependencies:
-    - backend_build          # pulls backend/node_modules artifacts
+    - backend_build
+  variables:
+    NODE_PATH: ./backend/node_modules
+  script:
+    - npm install
+    - npm run test:backend -- --ci --runInBand
   artifacts:
     when: always
     paths:
