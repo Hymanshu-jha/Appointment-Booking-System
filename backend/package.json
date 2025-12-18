@@ -3,12 +3,11 @@
   "version": "1.0.0",
   "type": "module",
   "main": "index.js",
-"scripts": {
-  "start": "cross-env NODE_ENV=production concurrently -k \"node index.js\" \"node worker.bullmq.js\"",
-  "debug": "cross-env NODE_ENV=local node debug-index.js",
-  "dev": "cross-env NODE_ENV=local concurrently \"nodemon index.js\" \"nodemon worker.bullmq.js\""
-},
-
+  "scripts": {
+    "start": "cross-env NODE_ENV=production concurrently -k \"node index.js\" \"node worker.bullmq.js\"",
+    "debug": "cross-env NODE_ENV=local node debug-index.js",
+    "dev": "cross-env NODE_ENV=local concurrently \"nodemon index.js\" \"nodemon worker.bullmq.js\""
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -38,6 +37,7 @@
     "ws": "^8.18.3"
   },
   "devDependencies": {
+    "jest-junit": "^16.0.0",
     "nodemon": "^3.1.10"
   }
 }
