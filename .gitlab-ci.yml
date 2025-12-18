@@ -8,6 +8,7 @@ cache:
   key: ${CI_COMMIT_REF_SLUG}-root
   paths:
     - node_modules/
+    - backend/node_modules/
 
 backend_build:
   stage: build
@@ -23,13 +24,13 @@ backend_test:
   stage: test
   dependencies:
     - backend_build
-  variables:
-    NODE_PATH: ./backend/node_modules
   script:
     - npm install
-    - npm run test:backend -- --ci --runInBand
+    - npm run test:backend -- --ci --runInBand --coverage
   artifacts:
     when: always
+    reports:
+      junit: junit.xml
     paths:
-      - backend/coverage/
+      - coverage/
       - junit.xml
