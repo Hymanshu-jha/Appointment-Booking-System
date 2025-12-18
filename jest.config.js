@@ -1,6 +1,17 @@
 export default {
   testEnvironment: "node",
+
   testMatch: ["**/tests/backend_tests/**/*.test.js"],
+
+  /**
+   * 🔑 THIS IS THE FIX
+   * Tell Jest to also look inside backend/node_modules
+   */
+  moduleDirectories: [
+    "node_modules",
+    "backend/node_modules"
+  ],
+
   clearMocks: true,
 
   reporters: [
@@ -14,6 +25,6 @@ export default {
     ]
   ],
 
-  coverageDirectory: "coverage",
-  collectCoverage: true
+  collectCoverage: true,
+  coverageDirectory: "coverage"
 };

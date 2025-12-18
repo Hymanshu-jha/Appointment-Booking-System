@@ -24,10 +24,10 @@ backend_test:
   dependencies:
     - backend_build
   script:
-    # install root deps (jest, jest-junit, supertest)
+    # install root dependencies (jest, jest-junit, supertest)
     - npm install
 
-    # run tests from root
+    # run backend tests
     - npm run test:backend -- --ci --runInBand --coverage
   artifacts:
     when: always
