@@ -2,7 +2,6 @@ image: node:18
 
 stages:
   - build
-  - lint
   - test
 
 cache:
@@ -21,7 +20,7 @@ backend_build:
     expire_in: 1 hour
 
 backend_lint:
-  stage: lint
+  stage: test
   dependencies:
     - backend_build
   script:
