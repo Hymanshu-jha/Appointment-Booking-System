@@ -2,6 +2,7 @@ image: node:18
 
 stages:
   - build
+  - lint
   - test
 
 cache:
@@ -18,6 +19,16 @@ backend_build:
     paths:
       - backend/node_modules/
     expire_in: 1 hour
+
+backend_lint:
+  stage: lint
+  dependencies:
+    - backend_build
+  script:
+    - cd backend
+    - npm install
+    - npm run lint   # Will always succeed
+  allow_failure: true
 
 backend_test:
   stage: test

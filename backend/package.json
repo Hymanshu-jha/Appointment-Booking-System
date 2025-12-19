@@ -6,7 +6,8 @@
   "scripts": {
     "start": "cross-env NODE_ENV=production concurrently -k \"node index.js\" \"node worker.bullmq.js\"",
     "debug": "cross-env NODE_ENV=local node debug-index.js",
-    "dev": "cross-env NODE_ENV=local concurrently \"nodemon index.js\" \"nodemon worker.bullmq.js\""
+    "dev": "cross-env NODE_ENV=local concurrently \"nodemon index.js\" \"nodemon worker.bullmq.js\"",
+    "lint": "eslint . || true"
   },
   "keywords": [],
   "author": "",
@@ -37,6 +38,8 @@
     "ws": "^8.18.3"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "eslint": "^9.39.2",
     "jest-junit": "^16.0.0",
     "nodemon": "^3.1.10"
   }
