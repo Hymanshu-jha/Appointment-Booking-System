@@ -7,7 +7,8 @@
     "start": "cross-env NODE_ENV=production concurrently -k \"node index.js\" \"node worker.bullmq.js\"",
     "debug": "cross-env NODE_ENV=local node debug-index.js",
     "dev": "cross-env NODE_ENV=local concurrently \"nodemon index.js\" \"nodemon worker.bullmq.js\"",
-    "lint": "eslint . || true"
+    "lint": "eslint . || true",
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
