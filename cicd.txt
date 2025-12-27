@@ -1,0 +1,10 @@
+git push
+   ↓
+GitLab CI
+   ├─ lint
+   ├─ tests
+   ├─ build validation
+   ↓ (only if all pass)
+merge to main
+   ↓
+Vercel / Render auto-deploy

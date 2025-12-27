@@ -3,16 +3,18 @@ import Redis from 'ioredis';
 import sendVerificationMail from './utils/nodemailer/transporter.nodemailer.js';
 import dotenv from 'dotenv';
 import Appointment from './db/schema/appointments.models.js';
+const REDIS_URL = process.env.REDIS_URL;
+const REDIS_TOKEN = process.env.REDIS_TOKEN;
+
 
 dotenv.config({
   path: process.env.NODE_ENV === "production" 
     ? ".env.production" 
     : ".env.local"
 });
-
 // Redis connection
-const REDIS_TOKEN = process.env.REDIS_TOKEN;
-const connection = new Redis(`rediss://default:${REDIS_TOKEN}@tender-chipmunk-14111.upstash.io:6379`, {
+
+const connection = new Redis(REDIS_URL, {
   maxRetriesPerRequest: null
 });
 
