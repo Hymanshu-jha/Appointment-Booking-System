@@ -8,9 +8,9 @@ workflow:
 
 stages:
   - pre
+  - build
   - lint
   - test
-  - build
   - e2e
   - security
   - deploy
@@ -28,6 +28,14 @@ install_dependencies:
     - echo "Dependencies installation skipped - dummy stage"
     - exit 0
 
+backend_build:
+  stage: build
+  script:
+    - cd backend
+    - npm ci
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+
 backend_lint:
   stage: lint
   script:
@@ -40,22 +48,16 @@ backend_tests:
   script:
     - cd backend
     - npm ci
+    - npm install --save-dev jest
+    - chmod +x node_modules/.bin/* || true
     - npx jest --ci --runInBand --coverage
   artifacts:
     when: always
     reports:
       junit: junit.xml
     paths:
-      - backend/coverage/
+      - coverage/
       - junit.xml
-
-backend_build:
-  stage: build
-  script:
-    - cd backend
-    - npm ci
-  rules:
-    - if: $CI_COMMIT_BRANCH == "main"
 
 e2e_tests:
   stage: e2e
